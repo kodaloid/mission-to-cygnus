@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ld46_entry
+namespace MTC
 {
     public static class Program
     {

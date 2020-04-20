@@ -1,6 +1,9 @@
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
+    /// <summary>
+    /// Holds a number of global constant values used mostly by the input engine.
+    /// </summary>
     public abstract class Constants
     {
         // -- signal commands --------------------------------------------------------

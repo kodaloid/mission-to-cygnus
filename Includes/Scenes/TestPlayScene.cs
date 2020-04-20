@@ -1,12 +1,12 @@
-using System;
-using ld46_entry.Includes.Renderers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MTC.Includes.Renderers;
+using System;
 
 // namespace aliases.
-using C = ld46_entry.Includes.Constants;
+using C = MTC.Includes.Constants;
 
-namespace ld46_entry.Includes.Scenes
+namespace MTC.Includes.Scenes
 {
     /// <summary>
     /// Base class for a sprite entity in our game.
@@ -82,7 +82,6 @@ namespace ld46_entry.Includes.Scenes
             GameState gs = new GameState();
             GameLevel lv1 = gs.Levels[0];
             lv1.PrimaryBody = ourSun;
-            gs.Save("test.xml");
         }
 
 

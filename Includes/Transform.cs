@@ -1,10 +1,10 @@
-using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+using System.Xml.Serialization;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
     /// <summary>
-    /// Base class for a sprite entity in our game.
+    /// Describes a transformation (scale-rotation-position) of an entity.
     /// </summary>
     public class Transform
     {

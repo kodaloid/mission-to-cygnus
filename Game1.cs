@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ld46_entry.Includes;
-using ld46_entry.Includes.Input;
-using ld46_entry.Includes.Scenes;
+using MTC.Includes;
+using MTC.Includes.Input;
+using MTC.Includes.Scenes;
 using System.Collections.Generic;
 using System.IO;
 
 // namespace aliases.
-using C = ld46_entry.Includes.Constants;
+using C = MTC.Includes.Constants;
 
-namespace ld46_entry
+namespace MTC
 {
     public class Game1 : Game
     {
@@ -56,7 +56,7 @@ namespace ld46_entry
             Textures = new Dictionary<string, Texture2D>();
 
             // init our scene.
-            var scene = new TestPlayScene();
+            var scene = new PlayScene();
             scene.LoadContent();
             Scenes = new SceneCollection();
             Scenes.Show(scene);
@@ -118,6 +118,9 @@ namespace ld46_entry
         }
 
 
+        /// <summary>
+        /// Load a texture from a file and give it a name.
+        /// </summary>
         public void LoadTextureFromFile(string name, string filename)
         {
             if (!this.Textures.ContainsKey(name))

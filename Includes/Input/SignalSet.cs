@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ld46_entry.Includes.Input
+namespace MTC.Includes.Input
 {
     public class SignalSet
     {

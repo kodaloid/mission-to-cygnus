@@ -1,4 +1,4 @@
-﻿namespace ld46_entry.Includes.Input
+﻿namespace MTC.Includes.Input
 {
     public class GamePadSignal : Signal
     {

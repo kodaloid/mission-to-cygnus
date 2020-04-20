@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
+    /// <summary>
+    /// A collecton of scenes.
+    /// </summary>
     public class SceneCollection : List<Scene>
     {
         private Scene current;

@@ -1,8 +1,11 @@
 using Microsoft.Xna.Framework;
-using ld46_entry.Includes.Renderers;
+using MTC.Includes.Renderers;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
+    /// <summary>
+    /// Describes a level in the GameState.
+    /// </summary>
     public class GameLevel
     {
         public string Name { get; set; }
@@ -19,9 +22,19 @@ namespace ld46_entry.Includes
         {
             this.Name = name;
             this.PrimaryBody = new Entity(null, Vector3.Zero);
-            this.Ship = new Entity(null, Vector3.Zero);
-            this.Caeruleum1 = new Entity(null, Vector3.Zero);
-            this.Caeruleum2 = new Entity(null, Vector3.Zero);
+            this.Ship =  new Entity("shipTexture", new Vector3(0, 750, 0));
+            this.Caeruleum1 = new Entity("caeruleumTexture", new Vector3(0, 750, 0));
+            this.Caeruleum2 = new Entity("caeruleumTexture2", new Vector3(0, 750, 0));
+        }
+
+
+        // Generate the entities for this level before it begins getting
+        // played. Complexity represents what fraction bodies to generate per
+        // complexity layer, for example a level could have 500 bodies, with a
+        // complexity graph of .3:.7 or .2:.6:.2 for 3 layers.
+        public void Initialize(int bodyCount, float[] complexity, bool isVoid)
+        {
+            // TODO: generator code!
         }
 
 

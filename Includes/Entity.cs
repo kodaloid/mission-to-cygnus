@@ -1,8 +1,8 @@
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Microsoft.Xna.Framework;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
     /// <summary>
     /// Base class for an entity in our game.

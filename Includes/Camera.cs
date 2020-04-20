@@ -1,7 +1,10 @@
 using Microsoft.Xna.Framework;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
+    /// <summary>
+    /// An object used for tracking the location of the player through space.
+    /// </summary>
     public class Camera
     {
         public Vector3 Position { get; set; }

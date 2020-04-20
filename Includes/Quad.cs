@@ -1,9 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
+    /// <summary>
+    /// A structure used for rendering individual entities.
+    /// </summary>
     public class Quad
     {
         public readonly int[] Indices;

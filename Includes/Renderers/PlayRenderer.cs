@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ld46_entry.Includes.Renderers
+namespace MTC.Includes.Renderers
 {
     /// <summary>
     /// A render engine for rendering the play scene.
@@ -86,6 +86,7 @@ namespace ld46_entry.Includes.Renderers
 
             this.Effect.World = transform;
             this.Effect.Texture = mesh.Texture;
+            this.Effect.DiffuseColor = Vector3.One;
 
             int vertexCount = mesh.Vertices.Length;
 

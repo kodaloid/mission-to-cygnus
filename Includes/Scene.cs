@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
     /// <summary>
     /// Base class for a scene in our game.

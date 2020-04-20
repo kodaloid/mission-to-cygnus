@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
-namespace ld46_entry.Includes
+namespace MTC.Includes
 {
     /// <summary>
     /// Class that generates a galaxy to explore!
@@ -191,6 +191,49 @@ namespace ld46_entry.Includes
             }
 
             return builder.ToMesh(tex2d);
+        }
+    }
+
+
+    /// <summary>
+    /// Class that specifies how to generate a GalaxyGraph.
+    /// </summary>
+    public class GalaxyOptions
+    {
+        private static Random __rand = new Random();
+        private static Random _random { get { return __rand; } }
+        
+        public float ArmCount = 3;
+        public float ArmSpread = 0.2f;
+        public float Gravity = 20;
+        public float ConformChance = 0.7f;
+        public float ScalingAngleStart = 0.2f;
+        public float ScalingAngleEnd = 0.5f;
+        public float ScalingPower = 0.1f;
+        public float GalaxySize = 650000.0f;
+        public float RotationStrength = 0.666f;
+        
+        public GalaxyOptions() { }
+    }
+
+
+    /// <summary>
+    /// Represents a point on a GalaxyGraph.
+    /// </summary>
+    public struct GalaxyPoint
+    {
+        public Vector3 Position;
+        public Color Color;
+        
+        public GalaxyPoint(Vector3 position, Color color)
+        {
+            this.Position = position;
+            this.Color = color;
+        }
+
+        public override string ToString()
+        {
+            return $"{Position} [{Color}]";
         }
     }
 }
