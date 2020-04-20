@@ -20,7 +20,9 @@ namespace MTC.Includes
         [XmlIgnore]                                    // No need to serialize this as it gets recreated frequently.
         public Transform WorldTransform { get; set; }  // The calculated world transform used for creating world matrix.
         [XmlAttribute]
-        public bool Visible { get; set; }            // Sprite renders only if this value is true.
+        public bool Visible { get; set; }              // Sprite renders only if this value is true.
+        [XmlAttribute]
+        public float Opacity { get; set; }             // Where 1.0 is opaque and 0.0 is translucent.
 
 
         public Entity()
@@ -38,6 +40,7 @@ namespace MTC.Includes
             this.LocalTransform.Position = position;
             this.WorldTransform = LocalTransform.Clone();
             this.Visible = true;
+            this.Opacity = 1.0f;
         }
         
 

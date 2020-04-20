@@ -21,6 +21,7 @@ namespace MTC.Includes.Scenes
         private PlayState playState;          // an enumerable value representing what phase of a level we are in.
         private OreBank foundOres;            // a bank for the ores we have collected so far in this level.
         private float shipRotateVelocity;     // a decaying value used to simulate lack of friction in space when rotating.
+        private Entity veil;                  // A square used to fade the screen in and out.
 
 
         // ------ CONSTRUCTOR -------------------------------------------------------------------------
@@ -49,8 +50,15 @@ namespace MTC.Includes.Scenes
             stars = new StarField(3);
             // init the found ores object.
             foundOres = new OreBank();
+            // the initial rotation velocity.
+            shipRotateVelocity = 0;
+            // create the fader veil.
+            veil = new Entity("square", Vector3.Zero);
+            veil.Opacity = 1.0f;
+            veil.LocalTransform.Scale = 99999; // make it huge.
+            veil.DiffuseColor = Color.Black;
             // play the initial state.
-            StartPlayState(playState);
+            Start(playState);
         }
 
 
@@ -61,11 +69,14 @@ namespace MTC.Includes.Scenes
             var ship = CurrentGame.GameState.CurrentLevel.Ship;
 
             // input.
-            UpdateSignals(gameTime);
-            UpdateShipVelocity();
-            UpdateShipRotation();
+            switch (playState)
+            {
+                case PlayState.Mining:
+                    Update_Mining(gameTime);
+                    break;
+            }
 
-            // state.
+            // global logic.
             tweenPlayer.Update(gameTime);
             stars.Update(gameTime);
             CurrentGame.GameState.Update(gameTime);
@@ -86,8 +97,15 @@ namespace MTC.Includes.Scenes
             graphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
+            // always draw these.
             stars.Draw(renderer);
             CurrentGame.GameState.Draw(renderer);
+            renderer.DrawEntity(veil);
+
+            /* switch (playState)
+            {
+
+            } */
         }
 
 
@@ -96,41 +114,48 @@ namespace MTC.Includes.Scenes
         // --------------------------------------------------------------------------------------------
 
 
-        private void StartPlayState(PlayState newState)
+        private void Start(PlayState newState)
         {
             playState = newState;
             switch (playState)
             {
                 case PlayState.Intro:
-                    StartPlayState_Intro();
+                    Start_Intro();
                     break;
                 case PlayState.InventoryMenu:
-                    StartPlayState_InventoryMenu();
+                    Start_InventoryMenu();
                     break;
                 case PlayState.Mining:
-                    StartPlayState_Mining();
+                    Start_Mining();
                     break;
             }
         }
 
 
-        private void StartPlayState_Intro()
+        private void Start_Intro()
         {
             var level = CurrentGame.GameState.CurrentLevel;
             level.SetCaeruleumPosition(-5000, 750);
             level.Ship.Visible = false;
 
             var startVec   = level.Caeruleum1.WorldTransform.Position;
-            var endVec     = new Vector3(5, 750, 0);
+            var endVec     = new Vector3(15, 750, 0);
             var startTime  = currentGameTime.TotalGameTime;
-            var endTime    = startTime + TimeSpan.FromSeconds(3);
-            var animation  = tweenPlayer.Add(startVec, endVec, startTime, endTime);
+            var ani1       = tweenPlayer.Add(1.0f, 0.0f, startTime, startTime + TimeSpan.FromSeconds(10));
+            var ani2       = tweenPlayer.Add(startVec, endVec, startTime, startTime + TimeSpan.FromSeconds(6));
 
             // animation mode.
-            animation.Interpolation = TweenInterpolateMode.SmoothStep;
+            ani1.Interpolation = TweenInterpolateMode.SmoothStep;
+            ani2.Interpolation = TweenInterpolateMode.SmoothStep;
 
             // handle updates.
-            animation.OnUpdate = delegate(ITween tween)
+            ani1.OnUpdate = delegate(ITween tween1)
+            {
+                veil.Opacity = (tween1 as FloatTween).CurrentValue;
+                int v = 5;
+            };
+
+            ani2.OnUpdate = delegate(ITween tween)
             {
                 var v3tween = tween as Vector3Tween;
                 level.Caeruleum1.WorldTransform.Position = v3tween.CurrentValue;
@@ -138,23 +163,23 @@ namespace MTC.Includes.Scenes
             };
 
             // handle completion.
-            animation.OnComplete = delegate(ITween tween)
+            ani2.OnComplete = delegate(ITween tween)
             {
                 var v3tween = tween as Vector3Tween;
                 level.Caeruleum1.WorldTransform.Position = v3tween.CurrentValue;
                 level.Caeruleum2.WorldTransform.Position = v3tween.CurrentValue;
-                StartPlayState(PlayState.Mining);
+                Start(PlayState.Mining);
             };
         }
 
 
-        private void StartPlayState_InventoryMenu()
+        private void Start_InventoryMenu()
         {
             var level = CurrentGame.GameState.CurrentLevel;
         }
 
 
-        private void StartPlayState_Mining()
+        private void Start_Mining()
         {
             var level = CurrentGame.GameState.CurrentLevel;
             level.Ship.Visible = true;
@@ -166,10 +191,8 @@ namespace MTC.Includes.Scenes
         // --------------------------------------------------------------------------------------------
 
 
-        private void UpdateSignals(GameTime gameTime)
+        private void Update_Mining(GameTime gameTime)
         {
-            CurrentGame.Signals.Update();
-
             if (CurrentGame.Signals.IsFired(Constants.SIGNAL_CUSTOM_2))
             {
                 camera.Zoom += 0.003f;
@@ -178,10 +201,13 @@ namespace MTC.Includes.Scenes
             {
                 camera.Zoom -= 0.003f;
             }
+
+            Update_Mining_ShipVelocity();
+            Update_Mining_ShipRotation();
         }
 
 
-        private void UpdateShipRotation()
+        private void Update_Mining_ShipRotation()
         {
             var ship = CurrentGame.GameState.CurrentLevel.Ship;
             bool rotationChanged = false;
@@ -217,7 +243,7 @@ namespace MTC.Includes.Scenes
         }
 
 
-        private void UpdateShipVelocity()
+        private void Update_Mining_ShipVelocity()
         {
             var ship = CurrentGame.GameState.CurrentLevel.Ship;
             if (CurrentGame.Signals.IsFired(Constants.SIGNAL_MOVE_UP))

@@ -60,6 +60,7 @@ namespace MTC.Includes.Renderers
                 this.Effect.World = world;
                 this.Effect.Texture = tex;
                 this.Effect.DiffuseColor = entity.DiffuseColor.ToVector3();
+                this.Effect.Alpha = entity.Opacity;
 
                 foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
                 {
@@ -92,6 +93,7 @@ namespace MTC.Includes.Renderers
             this.Effect.World = transform;
             this.Effect.Texture = mesh.Texture;
             this.Effect.DiffuseColor = Vector3.One;
+            this.Effect.Alpha = 1.0f;
 
             int vertexCount = mesh.Vertices.Length;
 

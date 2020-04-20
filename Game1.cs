@@ -58,6 +58,7 @@ namespace MTC
 
             // load textures.
             CurrentGame.LoadTextureFromFile("ship",       "Assets/ship-sprite1.png");
+            CurrentGame.LoadTextureFromFile("square",     "Assets/square.png");
             CurrentGame.LoadTextureFromFile("caeruleum",  "Assets/caeruleum-main.png");
             CurrentGame.LoadTextureFromFile("caeruleum2", "Assets/caeruleum-main2.png");
             CurrentGame.LoadTextureFromFile("point",      "Assets/star-sprite1.png");
@@ -80,6 +81,8 @@ namespace MTC
         /// </summary>
         protected override void Update(GameTime gameTime)
         {
+            Signals.Update();
+
             if (Signals.IsFired(C.SIGNAL_ESCAPE))
             {
                 CurrentGame.Exit();
