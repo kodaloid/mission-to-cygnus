@@ -3,6 +3,13 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Company>Kodaloid</Company>
+    <PackageId>Mission To Cygnus</PackageId>
+    <Authors>Kodaloid</Authors>
+    <Product>Mission To Cygnus</Product>
+    <Description>A game created for the game jam Ludum Dare 46.</Description>
+    <Copyright>Kodaloid</Copyright>
+    <PackageProjectUrl>https://github.com/kodaloid/mission-to-cygnus</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
