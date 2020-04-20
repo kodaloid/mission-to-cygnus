@@ -39,28 +39,33 @@ namespace MTC.Includes.Renderers
         /// </summary>
         public void DrawEntity(Entity entity, Entity parent = null)
         {
-            var tex = Game1.CurrentGame.Textures[entity.Texture];
-            var w = tex.Width;
-            var h = tex.Height;
+            var tex = Game1.CurrentGame.GetLoadedTexture(entity.Texture);
+            var w = tex != null ? tex.Width : 1;
+            var h = tex != null ? tex.Height : 1;
 
-            // create world transformations (merged with parent)
+            // create world transformations (merged with parent).
             entity.UpdateWorldTransform(parent);
-            var l = entity.LocalTransform;
-            var t = entity.WorldTransform;
 
-            Matrix world = Matrix.CreateTranslation(-0.5f, -0.5f, 0)  // this makes 0,0 the pivot
-                         * Matrix.CreateScale(w * l.Scale, h * l.Scale, 1)
-                         * Matrix.CreateRotationZ(t.Rotation)    // rotate
-                         * Matrix.CreateTranslation(t.Position); // move it
-
-            this.Effect.World = world;
-            this.Effect.Texture = tex;
-            this.Effect.DiffuseColor = entity.DiffuseColor.ToVector3();
-
-            foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
+            // only draw this if we have a texture to draw.
+            if (tex != null) 
             {
-                pass.Apply();
-                Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, Quad.Vertices, 0, 4, Quad.Indices, 0, 2);
+                var l = entity.LocalTransform;
+                var t = entity.WorldTransform;
+
+                Matrix world = Matrix.CreateTranslation(-0.5f, -0.5f, 0)  // this makes 0,0 the pivot
+                            * Matrix.CreateScale(w * l.Scale, h * l.Scale, 1)
+                            * Matrix.CreateRotationZ(t.Rotation)    // rotate
+                            * Matrix.CreateTranslation(t.Position); // move it
+
+                this.Effect.World = world;
+                this.Effect.Texture = tex;
+                this.Effect.DiffuseColor = entity.DiffuseColor.ToVector3();
+
+                foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, Quad.Vertices, 0, 4, Quad.Indices, 0, 2);
+                }
             }
 
             foreach (Entity child in entity.Children)

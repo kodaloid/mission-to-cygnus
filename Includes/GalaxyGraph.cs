@@ -180,7 +180,7 @@ namespace MTC.Includes
 
         public StaticMesh ToStaticMesh(GraphicsDevice device, string texture, float scaleMin = 0.05f, float scaleMax = 0.2f)
         {
-            var tex2d = Game1.CurrentGame.Textures[texture];
+            var tex2d = Game1.CurrentGame.GetLoadedTexture(texture);
             var builder = new StaticMeshBuilder();
             float scale;
 

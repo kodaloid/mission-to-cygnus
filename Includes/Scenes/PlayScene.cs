@@ -16,20 +16,13 @@ namespace MTC.Includes.Scenes
         private PlayRenderer renderer;
         private StarField stars;
         private GameState state;
+        private OreBank foundOres;
+        private float shipRotateVelocity;
 
 
         public PlayScene()
         {
-            string file = "Data/SaveState.mtc";
-            if (File.Exists(file))
-            {
-                state = GameState.Load(file);
-            }
-            else
-            {
-                state = new GameState(file);
-                state.Save();
-            }
+            
         }
 
 
@@ -39,21 +32,103 @@ namespace MTC.Includes.Scenes
             renderer = new PlayRenderer(CurrentGame.GraphicsDevice);
 
             // load textures.
-            CurrentGame.LoadTextureFromFile("shipTexture", "Assets/ship-sprite1.png");
-            CurrentGame.LoadTextureFromFile("caeruleumTexture", "Assets/caeruleum-main.png");
-            CurrentGame.LoadTextureFromFile("caeruleumTexture2", "Assets/caeruleum-main2.png");
-            CurrentGame.LoadTextureFromFile("pointTexture", "Assets/star-sprite1.png");
-            CurrentGame.LoadTextureFromFile("starTexture", "Assets/orb-sprite1.png");
+            CurrentGame.LoadTextureFromFile("ship",       "Assets/ship-sprite1.png");
+            CurrentGame.LoadTextureFromFile("caeruleum",  "Assets/caeruleum-main.png");
+            CurrentGame.LoadTextureFromFile("caeruleum2", "Assets/caeruleum-main2.png");
+            CurrentGame.LoadTextureFromFile("point",      "Assets/star-sprite1.png");
+            CurrentGame.LoadTextureFromFile("star",       "Assets/orb-sprite1.png");
 
-            // load states.
+            // load stars.
             stars = new StarField(3);
+            // load the gamestate.
+            state = GameState.Exists ? GameState.Load() : GameState.CreateNew();
+            // init the found ores object.
+            foundOres = new OreBank();
         }
 
 
         public override void Update(GameTime gameTime)
         {
+            // gather info.
+            var ship = state.CurrentLevel.Ship;
+
+            // input.
+            UpdateSignals();
+            UpdateShipVelocity();
+            UpdateShipRotation();
+
+            // state.
             stars.Update(gameTime);
-            //state.Update(gameTime);
+            state.Update(gameTime);
+            camera.AlignTo(ship);
+
+            // debug.
+            CurrentGame.Window.Title = $"Velocity: {ship.Velocity}, Rotation: {ship.LocalTransform.Rotation}, Zoom: {camera.Zoom}";
+        }
+
+
+        private void UpdateSignals()
+        {
+            CurrentGame.Signals.Update();
+
+            if (CurrentGame.Signals.IsFired(Constants.SIGNAL_CUSTOM_2))
+            {
+                camera.Zoom += 0.003f;
+            }
+            else if (CurrentGame.Signals.IsFired(Constants.SIGNAL_CUSTOM_3))
+            {
+                camera.Zoom -= 0.003f;
+            }
+        }
+
+
+        private void UpdateShipRotation()
+        {
+            var ship = state.CurrentLevel.Ship;
+            bool rotationChanged = false;
+            if (CurrentGame.Signals.IsFired(Constants.SIGNAL_MOVE_RIGHT))
+            {
+                shipRotateVelocity += 0.0005f;
+                shipRotateVelocity = MathHelper.Clamp(shipRotateVelocity, -.05f, .05f);
+                rotationChanged = true;
+            }
+            if (CurrentGame.Signals.IsFired(Constants.SIGNAL_MOVE_LEFT))
+            {
+                shipRotateVelocity -= 0.0005f;
+                shipRotateVelocity = MathHelper.Clamp(shipRotateVelocity, -.05f, .05f);
+                rotationChanged = true;
+            }
+
+            ship.LocalTransform.Rotation += shipRotateVelocity;
+            
+            // Slows down crafts rotation when not yawing left/right.
+            if (!rotationChanged)
+            {
+                if (shipRotateVelocity > 0)
+                {
+                    shipRotateVelocity -= 0.0002f;
+                    if (shipRotateVelocity > 0 && shipRotateVelocity < 0.001f) shipRotateVelocity = 0;
+                }
+                else if (shipRotateVelocity < 0)
+                {
+                    shipRotateVelocity += 0.0002f;
+                    if (shipRotateVelocity < 0 && shipRotateVelocity > -0.001f) shipRotateVelocity = 0;
+                }
+            }
+        }
+
+
+        private void UpdateShipVelocity()
+        {
+            var ship = state.CurrentLevel.Ship;
+            if (CurrentGame.Signals.IsFired(Constants.SIGNAL_MOVE_UP))
+            {
+                ship.Velocity += 0.1f;
+            }
+            if (CurrentGame.Signals.IsFired(Constants.SIGNAL_MOVE_DOWN))
+            {
+                ship.Velocity -= 0.1f;
+            }
         }
 
 
@@ -68,7 +143,7 @@ namespace MTC.Includes.Scenes
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
             stars.Draw(renderer);
-            //state.Draw(renderer);
+            state.Draw(renderer);
         }
     }
 }

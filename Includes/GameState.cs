@@ -12,60 +12,71 @@ namespace MTC.Includes
     public class GameState
     {
         [XmlIgnore]
-        private string FileName;
+        public static bool Exists { get => File.Exists(Constants.STATE_FILE); }
 
 
         public GameLevel[] Levels { get; set; }
         public int CurrentLevelIndex { get; set; }
         public GameLevel CurrentLevel { get => Levels[CurrentLevelIndex]; }
+        public OreBank CollectedOres { get; set; }
+        public OreBank BankedOres { get; set; }
 
 
-        public GameState(string filename) : this()
+        public GameState() { }
+
+
+        public static GameState CreateNew()
         {
-            FileName = filename;
-        }
-
-
-        public GameState()
-        {
-            Levels = new GameLevel[] {
-                new GameLevel("Orion"),
-                new GameLevel("Alpha Void"),
-                new GameLevel("Perseus"),
-                new GameLevel("Beta Void"),
-                new GameLevel("Cygnus")
+            return new GameState()
+            {
+                Levels = new GameLevel[] {
+                    new GameLevel("Orion"),
+                    new GameLevel("Alpha Void"),
+                    new GameLevel("Perseus"),
+                    new GameLevel("Beta Void"),
+                    new GameLevel("Cygnus")
+                },
+                CollectedOres = OreBank.GetDefault(),
+                BankedOres = new OreBank(),
             };
         }
 
 
-        public void Update(GameTime gameTime) => CurrentLevel.Update(gameTime);
+        public void Update(GameTime gameTime)
+        {
+             CurrentLevel.Update(gameTime);
+        }
 
 
-        public void Draw(PlayRenderer renderer) => CurrentLevel.Draw(renderer);
+        public void Draw(PlayRenderer renderer)
+        {
+            CurrentLevel.Draw(renderer);
+        }
 
 
         internal void Save()
         {
-            if (string.IsNullOrWhiteSpace(FileName))
-                throw new Exception("GameState was created without a filename!");
+            if (GameState.Exists)
+            {
+                File.Delete(Constants.STATE_FILE);
+            }
 
             XmlSerializer s = new XmlSerializer(typeof(GameState));
-            using (FileStream fs = File.OpenWrite(this.FileName))
+            using (FileStream fs = File.OpenWrite(Constants.STATE_FILE))
             {
                 s.Serialize(fs, this);
             }
         }
 
 
-        internal static GameState Load(string filename)
+        internal static GameState Load()
         {
             XmlSerializer s = new XmlSerializer(typeof(GameState));
             GameState result = null;
-            using (FileStream fs = File.OpenRead(filename))
+            using (FileStream fs = File.OpenRead(Constants.STATE_FILE))
             {
                 result = s.Deserialize(fs) as GameState;
             }
-            result.FileName = filename;
             return result;
         }
    }

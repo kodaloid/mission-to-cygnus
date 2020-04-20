@@ -22,9 +22,9 @@ namespace MTC.Includes
         {
             this.Name = name;
             this.PrimaryBody = new Entity(null, Vector3.Zero);
-            this.Ship =  new Entity("shipTexture", new Vector3(0, 750, 0));
-            this.Caeruleum1 = new Entity("caeruleumTexture", new Vector3(0, 750, 0));
-            this.Caeruleum2 = new Entity("caeruleumTexture2", new Vector3(0, 750, 0));
+            this.Ship =  new Entity("ship", new Vector3(0, 750, 0));
+            this.Caeruleum1 = new Entity("caeruleum", new Vector3(0, 750, 0));
+            this.Caeruleum2 = new Entity("caeruleum2", new Vector3(0, 750, 0));
         }
 
 

@@ -6,6 +6,8 @@ namespace MTC.Includes
     /// </summary>
     public abstract class Constants
     {
+        public const string STATE_FILE = "Data/SaveState.mtc";
+
         // -- signal commands --------------------------------------------------------
         public const int SIGNAL_UNKNOWN = 0;
         public const int SIGNAL_ESCAPE = 1000;

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MTC.Includes;
 using MTC.Includes.Input;
 using MTC.Includes.Scenes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -16,12 +17,12 @@ namespace MTC
         // very ugly stuff here, please burn with fire.
         private static Game1 currentGame;
         private GraphicsDeviceManager graphics;
+        private Dictionary<string, Texture2D> textures;
 
 
         public static Game1 CurrentGame { get { return currentGame; } }
         public SignalSet Signals { get; private set; }
         public SceneCollection Scenes { get; private set; }
-        public Dictionary<string, Texture2D> Textures { get; private set; }
 
 
         public Game1()
@@ -53,7 +54,7 @@ namespace MTC
             LoadControlScheme();
 
             // create a dictionary for our manually loaded textures.
-            Textures = new Dictionary<string, Texture2D>();
+            textures = new Dictionary<string, Texture2D>();
 
             // init our scene.
             var scene = new PlayScene();
@@ -123,10 +124,10 @@ namespace MTC
         /// </summary>
         public void LoadTextureFromFile(string name, string filename)
         {
-            if (!this.Textures.ContainsKey(name))
+            if (!this.textures.ContainsKey(name))
             {
                 Texture2D tex = TextureFromFile(this.GraphicsDevice, filename);
-                this.Textures.Add(name, tex);
+                this.textures.Add(name, tex);
             }
         }
 
@@ -142,6 +143,15 @@ namespace MTC
                 newTexture = Texture2D.FromStream(device, fs);
             }
             return newTexture;
-        }    
+        }
+
+
+        public Texture2D GetLoadedTexture(string name)
+        {
+            if (name == null) return null;
+            if (textures == null) throw new Exception("Texture bank does not yet exist.");
+            if (!textures.ContainsKey(name)) throw new Exception($"Cant find the texture named {name}");
+            return textures[name];
+        }
     }
 }
