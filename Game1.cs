@@ -23,6 +23,9 @@ namespace MTC
         public SignalSet Signals { get; private set; }                   // the input system.
         public SceneCollection Scenes { get; private set; }              // the loaded scenes.
         public GameState GameState;                                      // holds the players progress throughout the game.
+        public RenderTarget2D Canvas { get; private set; }               // the target onto which the game renders.
+        public SpriteBatch Batcher { get; private set; }                 // a spritebatch for rendering the canvas.
+        public SpriteFont OreInventoryFont { get; private set; }         // a sprite font!
 
 
         public Game1()
@@ -30,7 +33,7 @@ namespace MTC
             currentGame = this;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferHeight = 576;
             Window.AllowUserResizing = true;
             graphics.ApplyChanges();
 
@@ -50,6 +53,9 @@ namespace MTC
         /// </summary>
         protected override void LoadContent()
         {
+            Canvas = new RenderTarget2D(GraphicsDevice, 1024, 576, false, SurfaceFormat.Color, DepthFormat.Depth16);
+            Batcher = new SpriteBatch(GraphicsDevice);
+
             // set-up our input.
             LoadControlScheme();
 
@@ -63,6 +69,11 @@ namespace MTC
             CurrentGame.LoadTextureFromFile("caeruleum2", "Assets/caeruleum-main2.png");
             CurrentGame.LoadTextureFromFile("point",      "Assets/star-sprite1.png");
             CurrentGame.LoadTextureFromFile("star",       "Assets/orb-sprite1.png");
+            CurrentGame.LoadTextureFromFile("inv-menu",   "Assets/inventory-menu1.png");
+            CurrentGame.LoadTextureFromFile("cursor",     "Assets/cursor1.png");
+
+            // content pipeline stuff.
+            OreInventoryFont = Content.Load<SpriteFont>("OreInventoryFont");
 
             // load the gamestate.
             GameState = GameState.Exists ? GameState.Load() : GameState.CreateNew();
@@ -72,7 +83,6 @@ namespace MTC
             scene.LoadContent();
             Scenes = new SceneCollection();
             Scenes.Show(scene);
-
         }
 
 
@@ -98,8 +108,7 @@ namespace MTC
         /// </summary>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-
+            // draw onto the canvas.
             Scenes.Current?.Draw(gameTime);
 
             base.Draw(gameTime);
@@ -114,6 +123,7 @@ namespace MTC
             // our input system.
             Signals = new SignalSet();
             Signals.EnableKeyboard = true;
+            Signals.EnableMouse = true;
 
             // control bindings.
             Signals.setKey(C.SIGNAL_MOVE_LEFT, C.KEYS_A, C.OCCURRENCE_ALWAYS);
@@ -130,6 +140,9 @@ namespace MTC
             Signals.setKey(C.SIGNAL_CUSTOM_1, C.KEYS_T, C.OCCURRENCE_ONCE); // test button.
             Signals.setKey(C.SIGNAL_CUSTOM_2, C.KEYS_P, C.OCCURRENCE_ALWAYS); // zoom out
             Signals.setKey(C.SIGNAL_CUSTOM_3, C.KEYS_O, C.OCCURRENCE_ALWAYS); // zoom in
+
+            // mouse.
+            Signals.BindMouse(C.SIGNAL_CUSTOM_4, C.MOUSE_LEFT, C.OCCURRENCE_ONCE); // left mouse click.
         }
 
 

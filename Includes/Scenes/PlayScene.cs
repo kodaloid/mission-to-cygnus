@@ -2,7 +2,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MTC.Includes.Tweening;
 using MTC.Includes.Renderers;
+using MTC.Includes.UI;
 using System;
+using System.Diagnostics;
 
 // namespace aliases.
 
@@ -19,9 +21,10 @@ namespace MTC.Includes.Scenes
         private PlayRenderer renderer;        // engine for rendering graphics.
         private StarField stars;              // generates the background stars so we don't have to stare at a black void.
         private PlayState playState;          // an enumerable value representing what phase of a level we are in.
-        private OreBank foundOres;            // a bank for the ores we have collected so far in this level.
+        public OreBank foundOres;            // a bank for the ores we have collected so far in this level.
         private float shipRotateVelocity;     // a decaying value used to simulate lack of friction in space when rotating.
         private Entity veil;                  // A square used to fade the screen in and out.
+        private UI_InventoryMenu invMenu;     // The inventory ui menu.
 
 
         // ------ CONSTRUCTOR -------------------------------------------------------------------------
@@ -57,6 +60,9 @@ namespace MTC.Includes.Scenes
             veil.Opacity = 1.0f;
             veil.LocalTransform.Scale = 99999; // make it huge.
             veil.DiffuseColor = Color.Black;
+            // load the ui.
+            invMenu = new UI_InventoryMenu();
+            invMenu.LoadContent(CurrentGame.GraphicsDevice);
             // play the initial state.
             Start(playState);
         }
@@ -71,6 +77,9 @@ namespace MTC.Includes.Scenes
             // input.
             switch (playState)
             {
+                case PlayState.InventoryMenu:
+                    Update_InventoryMenu(gameTime);
+                    break;
                 case PlayState.Mining:
                     Update_Mining(gameTime);
                     break;
@@ -81,6 +90,7 @@ namespace MTC.Includes.Scenes
             stars.Update(gameTime);
             CurrentGame.GameState.Update(gameTime);
             camera.AlignTo(ship);
+            invMenu.Update(gameTime);
 
             // debug.
             CurrentGame.Window.Title = $"Velocity: {ship.Velocity}, Rotation: {ship.LocalTransform.Rotation}, Zoom: {camera.Zoom}";
@@ -89,23 +99,71 @@ namespace MTC.Includes.Scenes
 
         public override void Draw(GameTime gameTime)
         {
-            var graphicsDevice = CurrentGame.GraphicsDevice;
-            renderer.SetCamera(camera);
+            var game = CurrentGame;
+            var graphicsDevice = game.GraphicsDevice;
 
-            graphicsDevice.BlendState = BlendState.AlphaBlend;
-            graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
-            graphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            graphicsDevice.SetRenderTarget(game.Canvas);
+            graphicsDevice.Clear(Color.Black);
 
-            // always draw these.
-            stars.Draw(renderer);
-            CurrentGame.GameState.Draw(renderer);
-            renderer.DrawEntity(veil);
-
-            /* switch (playState)
+            #region Draw Onto Canvas
             {
+                renderer.SetCamera(camera);
+                graphicsDevice.BlendState = BlendState.AlphaBlend;
+                graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+                graphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
-            } */
+                // always draw these.
+                stars.Draw(renderer);
+                CurrentGame.GameState.Draw(renderer);
+                renderer.Effect.Alpha = 1;
+
+                #region Draw Any UI
+                {
+                    game.Batcher.Begin();
+
+                    if (playState == PlayState.InventoryMenu)
+                    {
+                        invMenu.Draw(game.Batcher);
+                        DrawCursor(game.Batcher);
+                    }
+                    
+                    game.Batcher.End();
+                }
+                #endregion
+
+                renderer.DrawEntity(veil);
+            }   
+            #endregion
+
+            #region Fill Screen With Canvas
+            {
+                graphicsDevice.SetRenderTarget(null);
+                game.Batcher.Begin();
+                game.Batcher.Draw(game.Canvas, graphicsDevice.Viewport.Bounds, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
+                game.Batcher.End();
+            }
+            #endregion
+        }
+
+
+        private void DrawCursor(SpriteBatch batcher)
+        {
+            var game  = CurrentGame;
+            var c_tex = game.GetLoadedTexture("cursor");
+            var c_vec = GetMouseCursorPosition();
+            batcher.Draw(c_tex, c_vec, null, Color.White);
+        }
+
+
+        public Vector2 GetMouseCursorPosition()
+        {
+            var game  = CurrentGame;
+            var c_tex     = game.GetLoadedTexture("cursor");
+            var c_pos     = game.Signals.CurrentMouseState.Position;
+            var c_scale_x = (float)game.Canvas.Width / (float)game.GraphicsDevice.PresentationParameters.BackBufferWidth;
+            var c_scale_y = (float)game.Canvas.Height / (float)game.GraphicsDevice.PresentationParameters.BackBufferHeight;
+            return new Vector2(c_pos.X * c_scale_x, c_pos.Y * c_scale_y );
         }
 
 
@@ -141,8 +199,8 @@ namespace MTC.Includes.Scenes
             var startVec   = level.Caeruleum1.WorldTransform.Position;
             var endVec     = new Vector3(15, 750, 0);
             var startTime  = currentGameTime.TotalGameTime;
-            var ani1       = tweenPlayer.Add(1.0f, 0.0f, startTime, startTime + TimeSpan.FromSeconds(10));
-            var ani2       = tweenPlayer.Add(startVec, endVec, startTime, startTime + TimeSpan.FromSeconds(6));
+            var ani1       = tweenPlayer.Add(1.0f, 0.0f, startTime, startTime + TimeSpan.FromSeconds(4));
+            var ani2       = tweenPlayer.Add(startVec, endVec, startTime, startTime + TimeSpan.FromSeconds(8));
 
             // animation mode.
             ani1.Interpolation = TweenInterpolateMode.SmoothStep;
@@ -152,7 +210,6 @@ namespace MTC.Includes.Scenes
             ani1.OnUpdate = delegate(ITween tween1)
             {
                 veil.Opacity = (tween1 as FloatTween).CurrentValue;
-                int v = 5;
             };
 
             ani2.OnUpdate = delegate(ITween tween)
@@ -168,7 +225,7 @@ namespace MTC.Includes.Scenes
                 var v3tween = tween as Vector3Tween;
                 level.Caeruleum1.WorldTransform.Position = v3tween.CurrentValue;
                 level.Caeruleum2.WorldTransform.Position = v3tween.CurrentValue;
-                Start(PlayState.Mining);
+                Start(PlayState.InventoryMenu);
             };
         }
 
@@ -253,6 +310,25 @@ namespace MTC.Includes.Scenes
             if (CurrentGame.Signals.IsFired(Constants.SIGNAL_MOVE_DOWN))
             {
                 ship.Velocity -= 0.1f;
+            }
+        }
+
+
+        public void Update_InventoryMenu(GameTime gameTime)
+        {
+            Update_InventoryMenu_Mouse();
+        }
+
+
+        private void Update_InventoryMenu_Mouse()
+        {
+            if (CurrentGame.Signals.IsFired(Constants.SIGNAL_CUSTOM_4)) // left mouse button.
+            {
+                Vector2 pos = GetMouseCursorPosition();
+                if (invMenu.LaunchButton1.Bounds.Contains(pos))
+                {
+                    Start(PlayState.Mining);
+                }
             }
         }
     }
