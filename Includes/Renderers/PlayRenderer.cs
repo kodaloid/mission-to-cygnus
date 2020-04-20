@@ -47,7 +47,7 @@ namespace MTC.Includes.Renderers
             entity.UpdateWorldTransform(parent);
 
             // only draw this if we have a texture to draw.
-            if (tex != null) 
+            if (entity.Visible && tex != null) 
             {
                 var l = entity.LocalTransform;
                 var t = entity.WorldTransform;

@@ -19,6 +19,8 @@ namespace MTC.Includes
         public Transform LocalTransform { get; set; }  // The local transform used for holding position, scale, rotation.
         [XmlIgnore]                                    // No need to serialize this as it gets recreated frequently.
         public Transform WorldTransform { get; set; }  // The calculated world transform used for creating world matrix.
+        [XmlAttribute]
+        public bool Visible { get; set; }            // Sprite renders only if this value is true.
 
 
         public Entity()
@@ -35,6 +37,7 @@ namespace MTC.Includes
             this.LocalTransform = new Transform();
             this.LocalTransform.Position = position;
             this.WorldTransform = LocalTransform.Clone();
+            this.Visible = true;
         }
         
 

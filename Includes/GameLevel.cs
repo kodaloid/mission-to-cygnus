@@ -23,8 +23,9 @@ namespace MTC.Includes
             this.Name = name;
             this.PrimaryBody = new Entity(null, Vector3.Zero);
             this.Ship =  new Entity("ship", new Vector3(0, 750, 0));
-            this.Caeruleum1 = new Entity("caeruleum", new Vector3(0, 750, 0));
-            this.Caeruleum2 = new Entity("caeruleum2", new Vector3(0, 750, 0));
+            this.Ship.Visible = false;
+            this.Caeruleum1 = new Entity("caeruleum", new Vector3(-5000, 750, 0));
+            this.Caeruleum2 = new Entity("caeruleum2", new Vector3(-5000, 750, 0));
         }
 
 
@@ -53,6 +54,17 @@ namespace MTC.Includes
             renderer.DrawEntity(Caeruleum1);
             renderer.DrawEntity(Ship);
             renderer.DrawEntity(Caeruleum2);
+        }
+
+
+        public void SetCaeruleumPosition(float x, float y) 
+            => SetCaeruleumPosition(new Vector3(x, y, 0));
+
+
+        public void SetCaeruleumPosition(Vector3 position)
+        {
+            Caeruleum1.WorldTransform.Position = position;
+            Caeruleum2.WorldTransform.Position = position;
         }
     }
 }
