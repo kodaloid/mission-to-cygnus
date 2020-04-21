@@ -58,6 +58,7 @@ artifacts/
 *.svclog
 *.scc
 *.zip
+cloud1.png
 
 # Click-Once directory
 publish/

@@ -81,7 +81,7 @@ namespace MTC.Includes.Scenes
             // game state test.
             GameState gs = new GameState();
             GameLevel lv1 = gs.Levels[0];
-            lv1.PrimaryBody = ourSun;
+            //lv1.PrimaryBody = ourSun;
         }
 
 

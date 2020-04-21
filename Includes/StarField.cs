@@ -36,7 +36,7 @@ namespace MTC.Includes
             }
 
             Singularity = new Entity("star", Vector3.Zero);
-            Singularity.LocalTransform.Scale = 7.5f;
+            Singularity.LocalTransform.Scale = 16.5f;
             Singularity.DiffuseColor = Color.Black;
         }
 

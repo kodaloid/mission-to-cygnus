@@ -14,6 +14,7 @@ namespace MTC.Includes.UI
 
         public UI_Rectangle LaunchButton1;
         public UI_Label[] LabelColumn1, LabelColumn2, LabelColumn3;
+        public int Alpha;
 
 
         public UI_InventoryMenu()
@@ -40,6 +41,8 @@ namespace MTC.Includes.UI
                 LabelColumn2[i] = new UI_Label(game.OreInventoryFont, 195 + Bounds.Left, 50 + Bounds.Top + y, "st: 0", Color.White);
                 LabelColumn3[i] = new UI_Label(game.OreInventoryFont, 355 + Bounds.Left, 50 + Bounds.Top + y, "st: 0", Color.White);
             }
+
+            Alpha = 0;
         }
 
 
@@ -91,6 +94,8 @@ namespace MTC.Includes.UI
             LabelColumn3[6].Text = $"au: {st.BankedOres.Gold}";
             LabelColumn3[7].Text = $"pt: {st.BankedOres.Platinum}";
             LabelColumn3[8].Text = $"ur: {st.BankedOres.Uranium}";
+
+            if (Alpha < 255) Alpha++;
         }
 
 

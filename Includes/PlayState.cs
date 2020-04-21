@@ -10,18 +10,14 @@ namespace MTC.Includes
         // this state immediately, as this is the state at which a player leaves.
         InventoryMenu = 1,
         // Animation when alighting from the top.
-        Leaving_Top = 2,
-        // Animation when alighting from the bottom.
-        Leaving_Bottom = 3,
+        Leaving = 2,
         // The main play state where the player can fly around the level.
-        Mining = 4,
+        Mining = 3,
         // Animation when returning from the top.
-        Return_Top = 5,
-        // Animation when returning from the bottom.
-        Return_Bottom = 6,
+        Return = 4,
         // Animation when the level is complete and the caeruleum leaves to the right.
-        Level_Complete = 7,
+        Level_Complete = 5,
         // Sequence when the player dies.
-        GameOver = 8
+        GameOver = 6
     }
 }

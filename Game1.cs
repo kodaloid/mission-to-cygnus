@@ -28,12 +28,19 @@ namespace MTC
         public SpriteFont OreInventoryFont { get; private set; }         // a sprite font!
 
 
+        public bool AltFrame { get; private set; }                       // true once every 500 ms use for some basic animation.
+        public TimeSpan AltElapsed { get; private set; }                 //
+
+
         public Game1()
         {
             currentGame = this;
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 576;
+            graphics.PreferMultiSampling = true;
+            //graphics.PreferredBackBufferWidth = 1280;
+            //graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
             Window.AllowUserResizing = true;
             graphics.ApplyChanges();
 
@@ -53,7 +60,7 @@ namespace MTC
         /// </summary>
         protected override void LoadContent()
         {
-            Canvas = new RenderTarget2D(GraphicsDevice, 1024, 576, false, SurfaceFormat.Color, DepthFormat.Depth16);
+            Canvas = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             Batcher = new SpriteBatch(GraphicsDevice);
 
             // set-up our input.
@@ -66,11 +73,14 @@ namespace MTC
             CurrentGame.LoadTextureFromFile("ship",       "Assets/ship-sprite1.png");
             CurrentGame.LoadTextureFromFile("square",     "Assets/square.png");
             CurrentGame.LoadTextureFromFile("caeruleum",  "Assets/caeruleum-main.png");
-            CurrentGame.LoadTextureFromFile("caeruleum2", "Assets/caeruleum-main2.png");
+            CurrentGame.LoadTextureFromFile("caeruleum2a","Assets/caeruleum-main2a.png");
+            CurrentGame.LoadTextureFromFile("caeruleum2b","Assets/caeruleum-main2b.png");
             CurrentGame.LoadTextureFromFile("point",      "Assets/star-sprite1.png");
             CurrentGame.LoadTextureFromFile("star",       "Assets/orb-sprite1.png");
             CurrentGame.LoadTextureFromFile("inv-menu",   "Assets/inventory-menu1.png");
             CurrentGame.LoadTextureFromFile("cursor",     "Assets/cursor1.png");
+            CurrentGame.LoadTextureFromFile("sol",        "Assets/sol.png");
+            CurrentGame.LoadTextureFromFile("cloud1",     "Assets/cloud1.png");
 
             // content pipeline stuff.
             OreInventoryFont = Content.Load<SpriteFont>("OreInventoryFont");
@@ -92,6 +102,13 @@ namespace MTC
         protected override void Update(GameTime gameTime)
         {
             Signals.Update();
+
+            AltElapsed += gameTime.ElapsedGameTime;
+            if (AltElapsed > TimeSpan.FromMilliseconds(500))
+            {
+                AltFrame = !AltFrame;
+                AltElapsed = TimeSpan.Zero;
+            }
 
             if (Signals.IsFired(C.SIGNAL_ESCAPE))
             {
