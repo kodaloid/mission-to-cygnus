@@ -21,4 +21,20 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Assets\caeruleum-main.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\caeruleum-main2a.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\caeruleum-main2b.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\cloud1.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\cursor1.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\inventory-menu1.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\orb-sprite1.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\rock_rolling_005.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\ship-sprite1.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\sol.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\square.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\star_filled.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\star-sprite1.png" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -125,10 +125,6 @@ namespace MTC.Includes.Scenes
             {
                 renderer.SetCamera(camera);
                 graphicsDevice.BlendState = BlendState.NonPremultiplied;
-                graphicsDevice.BlendFactor = Color.White;
-                graphicsDevice.DepthStencilState = DepthStencilState.Default;
-                graphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
                 // always draw these.
                 renderer.DrawEntity(clouds2);
@@ -141,14 +137,11 @@ namespace MTC.Includes.Scenes
                 #region Draw Any UI
                 {
                     game.Batcher.Begin();
-                    graphicsDevice.BlendState = BlendState.NonPremultiplied;
-
                     if (playState == PlayState.InventoryMenu)
                     {
                         invMenu.Draw(game.Batcher);
                         DrawCursor(game.Batcher);
-                    }
-                    
+                    }                    
                     game.Batcher.End();
                 }
                 #endregion

@@ -14,7 +14,7 @@ namespace MTC.Includes.UI
 
         public UI_Rectangle LaunchButton1;
         public UI_Label[] LabelColumn1, LabelColumn2, LabelColumn3;
-        public int Alpha;
+        public float Alpha;
 
 
         public UI_InventoryMenu()
@@ -95,7 +95,7 @@ namespace MTC.Includes.UI
             LabelColumn3[7].Text = $"pt: {st.BankedOres.Platinum}";
             LabelColumn3[8].Text = $"ur: {st.BankedOres.Uranium}";
 
-            if (Alpha < 255) Alpha++;
+            if (Alpha < 1) Alpha += 0.01f;
         }
 
 
@@ -104,7 +104,7 @@ namespace MTC.Includes.UI
             if (Bounds != Rectangle.Empty)
             {
                 var tex = Game1.CurrentGame.GetLoadedTexture("inv-menu");
-                batcher.Draw(tex, Bounds, null, Background);
+                batcher.Draw(tex, Bounds, null, new Color(Color.White, 0.001f));
                 LaunchButton1.Draw(batcher);
                 for (int i=0; i<9; i++)
                 {

@@ -37,10 +37,10 @@ namespace MTC
             currentGame = this;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferMultiSampling = true;
-            //graphics.PreferredBackBufferWidth = 1280;
-            //graphics.PreferredBackBufferHeight = 720;
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            //graphics.PreferredBackBufferWidth = 1920;
+            //graphics.PreferredBackBufferHeight = 1080;
             Window.AllowUserResizing = true;
             graphics.ApplyChanges();
 
@@ -114,6 +114,10 @@ namespace MTC
             {
                 CurrentGame.Exit();
             }
+            else if (Signals.IsFired(C.SIGNAL_CUSTOM_5))
+            {
+                graphics.ToggleFullScreen();
+            }
 
             Scenes.Current?.Update(gameTime);
             base.Update(gameTime);
@@ -157,6 +161,7 @@ namespace MTC
             Signals.setKey(C.SIGNAL_CUSTOM_1, C.KEYS_T, C.OCCURRENCE_ONCE); // test button.
             Signals.setKey(C.SIGNAL_CUSTOM_2, C.KEYS_P, C.OCCURRENCE_ALWAYS); // zoom out
             Signals.setKey(C.SIGNAL_CUSTOM_3, C.KEYS_O, C.OCCURRENCE_ALWAYS); // zoom in
+            Signals.setKey(C.SIGNAL_CUSTOM_5, C.KEYS_F, C.OCCURRENCE_ALWAYS); // full screen.
 
             // mouse.
             Signals.BindMouse(C.SIGNAL_CUSTOM_4, C.MOUSE_LEFT, C.OCCURRENCE_ONCE); // left mouse click.
