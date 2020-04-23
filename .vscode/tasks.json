@@ -14,12 +14,27 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build-exe-win-x64",
-            "command": "dotnet build -r win10-x64",
+            "label": "build-win-x64",
+            "command": "dotnet build -r win-x64",
             "type": "shell",
             "args": [],
             "problemMatcher": "$msCompile"
         },
+        {
+            "label": "build-linux-x64",
+            "command": "dotnet build -r linux-x64",
+            "type": "shell",
+            "args": [],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-osx-x64",
+            "command": "dotnet build -r osx-x64",
+            "type": "shell",
+            "args": [],
+            "problemMatcher": "$msCompile"
+        },
+        
         {
             "label": "publish",
             "command": "dotnet",
